@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { ui, defaultLang } from "../../../../i18n/ui";
+
+export async function getStaticPaths() {
+    const posts = await getCollection("blog");
+    const combos = new Set();
+    posts.forEach((post) => {
+        const [lang] = post.id.split("/");
+        const cat = post.data.category;
+        if (lang && cat) combos.add(`${lang}|${cat}`);
+    });
+    return Array.from(combos).map((s) => {
+        const [lang, category] = (s as string).split("|");
+        return { params: { lang, category } };
+    });
+}
+
+const { lang, category } = Astro.params;
+const posts = await getCollection("blog");
+const filtered = posts.filter(
+    (p) => p.id.startsWith(`${lang}/`) && p.data.category === category,
+);
+
+function t(lang: string, key: string) {
+    return (ui as any)[lang]?.[key] ?? (ui as any)[defaultLang]?.[key] ?? key;
+}
+
+const title = `Category: ${t(lang, `category.${category}`)}`;
+const description = `Articles in the "${t(lang, `category.${category}`)}" category (${lang}).`;
+---
+
+<BaseLayout title={title}>
+    <h1>{title}</h1>
+    <p>{description}</p>
+
+    <h2>Articles</h2>
+    <ul>
+        {
+            filtered.map((post) => (
+                <li>
+                    <a href={`/blog/${post.id}`}>{post.data.title}</a>
+                    <p>{post.data.description}</p>
+                    <small>
+                        By {post.data.author} on{" "}
+                        {post.data.pubDate.toDateString()}
+                    </small>
+                    <div>
+                        <a href={`/blog/${post.id}`}>
+                            {t(lang, "blog.readMore")}
+                        </a>
+                    </div>
+                </li>
+            ))
+        }
+    </ul>
+</BaseLayout>

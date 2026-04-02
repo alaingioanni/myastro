@@ -1,6 +1,7 @@
 ---
 title: "My Second Blog Post"
 description: "This is my second blog post using Astro and Pico.css"
+category: "technology"
 pubDate: "2023-12-01"
 author: "Your Name"
 ---
