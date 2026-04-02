@@ -1,7 +1,7 @@
 ---
 title: "My First Blog Post"
 description: "This is my first blog post using Astro and Pico.css"
-pubDate: 2023-12-01
+pubDate: "2023-12-01"
 author: "Your Name"
 ---
 
