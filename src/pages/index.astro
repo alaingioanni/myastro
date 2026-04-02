@@ -1,17 +1,22 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 
+const posts = await getCollection('blog');
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro 5</h1>
-	</body>
-</html>
+<BaseLayout title="My Blog">
+	<h1>My Blog</h1>
+	<p>Welcome to my simple blog built with Astro and Pico.css.</p>
+
+	<h2>Articles</h2>
+	<ul>
+		{posts.map((post) => (
+			<li>
+				<a href={`/blog/${post.slug}`}>{post.data.title}</a>
+				<p>{post.data.description}</p>
+				<small>By {post.data.author} on {post.data.pubDate.toDateString()}</small>
+			</li>
+		))}
+	</ul>
+</BaseLayout>
